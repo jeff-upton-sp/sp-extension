@@ -7,9 +7,10 @@ import (
 )
 
 type App struct {
-	FunctionRepo model.FunctionRepo
+	FunctionRepo      model.FunctionRepo
+	FunctionEvaluator model.FunctionEvaluator
 }
 
 func (app *App) Invoke(ctx context.Context, input InvokeInput) (InvokeOutput, error) {
-	return invoke(ctx, input, app.FunctionRepo)
+	return invoke(ctx, input, app.FunctionRepo, app.FunctionEvaluator)
 }
