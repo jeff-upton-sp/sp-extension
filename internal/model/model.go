@@ -14,7 +14,6 @@ type Function struct {
 }
 
 type FunctionRepo interface {
-	FindAll(ctx context.Context) ([]Function, error)
 	FindByID(ctx context.Context, id FunctionID) (Function, error)
 }
 

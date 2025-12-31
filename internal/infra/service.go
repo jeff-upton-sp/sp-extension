@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jeff-upton-sp/sp-extension/internal/cmd"
+	"github.com/jeff-upton-sp/sp-extension/internal/infra/memory"
 	"github.com/sailpoint/atlas-go/atlas/application"
 	"golang.org/x/sync/errgroup"
 )
@@ -25,7 +26,17 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 		return nil, fmt.Errorf("load config: %w", err)
 	}
 
-	app := &cmd.App{}
+	functionRepo, err := memory.NewFunctionRepo()
+	if err != nil {
+		return nil, err
+	}
+
+	functionEvaluator := newGojaFunctionEvaluator()
+
+	app := &cmd.App{
+		FunctionRepo:      functionRepo,
+		FunctionEvaluator: functionEvaluator,
+	}
 
 	s := &ExtensionService{}
 	s.Application = application
