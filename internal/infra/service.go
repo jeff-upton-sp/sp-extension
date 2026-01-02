@@ -42,6 +42,10 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 	s.Application = application
 	s.app = app
 
+	if err := s.loadData(ctx); err != nil {
+		return nil, err
+	}
+
 	return s, nil
 }
 

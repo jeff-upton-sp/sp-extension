@@ -15,8 +15,7 @@ func (s *ExtensionService) buildRoutes() *mux.Router {
 	r.Use(web.CustomAuthorization())
 
 	r.Handle("/functions/:id", s.getFunction()).Methods(http.MethodGet)
-
-	r.Handle("/invoke", s.invoke()).Methods(http.MethodPost)
+	r.Handle("/functions/:id/invoke", s.invoke()).Methods(http.MethodPost)
 
 	return r
 }
@@ -48,12 +47,19 @@ func (s *ExtensionService) getFunction() http.HandlerFunc {
 func (s *ExtensionService) invoke() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
+		vars := mux.Vars(r)
+
 		decoder := json.NewDecoder(r.Body)
 
-		var input cmd.InvokeInput
-		if err := decoder.Decode(&input); err != nil {
+		var functionInput json.RawMessage
+		if err := decoder.Decode(&functionInput); err != nil {
 			web.BadRequest(ctx, w, err)
 			return
+		}
+
+		input := cmd.InvokeInput{
+			FunctionID: model.FunctionID(vars["id"]),
+			Input:      functionInput,
 		}
 
 		if err := input.Validate(); err != nil {
