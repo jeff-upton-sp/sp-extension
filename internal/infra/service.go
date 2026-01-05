@@ -16,7 +16,7 @@ type ExtensionService struct {
 }
 
 func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
-	application, err := application.New("sp-policy", WithNullEventPublisher(), application.WithDefaultCodecRegistry())
+	application, err := application.New("sp-extension", WithNullEventPublisher(), application.WithDefaultCodecRegistry())
 	if err != nil {
 		return nil, fmt.Errorf("create application: %w", err)
 	}

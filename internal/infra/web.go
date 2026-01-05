@@ -14,8 +14,8 @@ func (s *ExtensionService) buildRoutes() *mux.Router {
 	r := web.NewRouter(web.DefaultAuthenticationConfig(s.TokenValidator))
 	r.Use(web.CustomAuthorization())
 
-	r.Handle("/functions/:id", s.getFunction()).Methods(http.MethodGet)
-	r.Handle("/functions/:id/invoke", s.invoke()).Methods(http.MethodPost)
+	r.Handle("/functions/{id}", s.getFunction()).Methods(http.MethodGet)
+	r.Handle("/functions/{id}/invoke", s.invoke()).Methods(http.MethodPost)
 
 	return r
 }

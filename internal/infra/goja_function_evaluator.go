@@ -25,11 +25,19 @@ func (e *gojaFunctionEvaluator) EvaluateFunction(ctx context.Context, sourceCode
 	// TODO: execution time limit, memory limit..
 
 	vm := goja.New()
-	vm.Set("input", inputMap)
-
-	result, err := vm.RunString(sourceCode)
+	_, err := vm.RunString(sourceCode)
 	if err != nil {
 		return nil, err
+	}
+
+	main, ok := goja.AssertFunction(vm.Get("main"))
+	if !ok {
+		return nil, fmt.Errorf("no main function defined")
+	}
+
+	result, err := main(goja.Undefined(), vm.ToValue(inputMap))
+	if err != nil {
+		return nil, fmt.Errorf("eval main: %w", err)
 	}
 
 	js, err := json.Marshal(result)

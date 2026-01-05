@@ -1,1 +1,3 @@
-return 'hello, world!'
+function main(input) {
+	return input;
+}

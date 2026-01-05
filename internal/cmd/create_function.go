@@ -35,6 +35,7 @@ func createFunction(ctx context.Context, input CreateFunctionInput, repo model.F
 	}
 
 	f := model.Function{
+		ID:         model.FunctionID(input.Name),
 		Name:       input.Name,
 		SourceCode: input.SourceCode,
 	}
