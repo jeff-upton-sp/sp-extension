@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/dop251/goja"
 )
@@ -22,9 +23,15 @@ func (e *gojaFunctionEvaluator) EvaluateFunction(ctx context.Context, sourceCode
 		return nil, fmt.Errorf("marshal input: %w", err)
 	}
 
-	// TODO: execution time limit, memory limit..
+	// TODO:  memory limit..
 
 	vm := goja.New()
+
+	// Execution time limit enforced...
+	time.AfterFunc(300*time.Millisecond, func() {
+		vm.Interrupt("halt")
+	})
+
 	_, err := vm.RunString(sourceCode)
 	if err != nil {
 		return nil, err
