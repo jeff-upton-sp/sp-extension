@@ -15,8 +15,12 @@ type Function struct {
 	SourceCode string     `json:"sourceCode"`
 }
 
-type FunctionRepo interface {
+type FunctionProvider interface {
 	FindByID(ctx context.Context, id FunctionID) (Function, error)
+}
+
+type FunctionRepo interface {
+	FunctionProvider
 	Save(ctx context.Context, f *Function) error
 }
 

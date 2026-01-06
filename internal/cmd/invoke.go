@@ -25,12 +25,16 @@ type InvokeOutput struct {
 	Result json.RawMessage `json:"result"`
 }
 
-func invoke(ctx context.Context, input InvokeInput, repo model.FunctionRepo, evaluator model.FunctionEvaluator) (InvokeOutput, error) {
+type FunctionProvider interface {
+	FindByID(ctx context.Context, id model.FunctionID) (model.Function, error)
+}
+
+func invoke(ctx context.Context, input InvokeInput, provider FunctionProvider, evaluator model.FunctionEvaluator) (InvokeOutput, error) {
 	if err := input.Validate(); err != nil {
 		return InvokeOutput{}, err
 	}
 
-	f, err := repo.FindByID(ctx, input.FunctionID)
+	f, err := provider.FindByID(ctx, input.FunctionID)
 	if err != nil {
 		return InvokeOutput{}, err
 	}

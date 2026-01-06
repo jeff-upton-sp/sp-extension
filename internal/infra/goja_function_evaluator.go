@@ -23,8 +23,8 @@ func (e *gojaFunctionEvaluator) EvaluateFunction(ctx context.Context, sourceCode
 		return nil, fmt.Errorf("marshal input: %w", err)
 	}
 
+	// TODO: is there safe way to cache VMs? keeping them warm?
 	// TODO:  memory limit..
-
 	vm := goja.New()
 
 	// Execution time limit enforced...
