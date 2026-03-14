@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"embed"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -11,8 +12,39 @@ import (
 	"github.com/jeff-upton-sp/sp-extension/internal/cmd"
 )
 
+//go:embed data/function_types
+var functionTypeFS embed.FS
+
 //go:embed data/functions
 var functionFS embed.FS
+
+func (s *ExtensionService) loadFunctionTypes(ctx context.Context) error {
+	if err := fs.WalkDir(functionTypeFS, ".", func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() || !strings.HasSuffix(path, ".json") {
+			return nil
+		}
+
+		typeData, err := functionTypeFS.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		var createFunctionTypeInput cmd.CreateFunctionTypeInput
+		if err := json.Unmarshal(typeData, &createFunctionTypeInput); err != nil {
+			return fmt.Errorf("unmarshal function type from '%s': %w", path, err)
+		}
+
+		if _, err := s.app.CreateFunctionType(ctx, createFunctionTypeInput); err != nil {
+			return fmt.Errorf("create function type '%s': %w", path, err)
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func (s *ExtensionService) loadFunctions(ctx context.Context) error {
 	if err := fs.WalkDir(functionFS, ".", func(path string, d fs.DirEntry, err error) error {
@@ -39,13 +71,17 @@ func (s *ExtensionService) loadFunctions(ctx context.Context) error {
 
 		return nil
 	}); err != nil {
-		return nil
+		return err
 	}
 
 	return nil
 }
 
 func (s *ExtensionService) loadData(ctx context.Context) error {
+	if err := s.loadFunctionTypes(ctx); err != nil {
+		return err
+	}
+
 	if err := s.loadFunctions(ctx); err != nil {
 		return err
 	}

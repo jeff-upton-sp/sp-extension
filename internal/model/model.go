@@ -9,6 +9,18 @@ import (
 
 type FunctionID string
 
+type FunctionTypeID string
+
+type Schema interface {
+	ValidateJSON(ctx context.Context, data []byte) error
+}
+
+type FunctionType struct {
+	ID           FunctionTypeID `json:"id"`
+	InputSchema  Schema         `json:"inputSchema"`
+	OutputSchema Schema         `json:"outputSchema"`
+}
+
 type Function struct {
 	ID         FunctionID `json:"id"`
 	Name       string     `json:"name"`
@@ -22,6 +34,11 @@ type FunctionProvider interface {
 type FunctionRepo interface {
 	FunctionProvider
 	Save(ctx context.Context, f *Function) error
+}
+
+type FunctionTypeRepo interface {
+	FindByID(ctx context.Context, id FunctionTypeID) (FunctionType, error)
+	Save(ctx context.Context, functionType FunctionType) error
 }
 
 type FunctionEvaluator interface {

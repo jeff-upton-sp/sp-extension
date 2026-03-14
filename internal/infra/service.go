@@ -41,10 +41,13 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 		}
 	}
 
+	functionTypeRepo := memory.NewFunctionTypeRepo()
+
 	functionEvaluator := newGojaFunctionEvaluator()
 
 	app := &cmd.App{
 		FunctionRepo:      functionRepo,
+		FunctionTypeRepo:  functionTypeRepo,
 		FunctionEvaluator: functionEvaluator,
 	}
 

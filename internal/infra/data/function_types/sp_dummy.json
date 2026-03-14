@@ -1,0 +1,21 @@
+{
+  "id": "sp:dummy",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "generated": {
+        "type": "number"
+      }
+    },
+    "addtionalProperties": false
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "generated": {
+        "type": "number"
+      }
+    },
+    "addtionalProperties": false
+  }
+}
