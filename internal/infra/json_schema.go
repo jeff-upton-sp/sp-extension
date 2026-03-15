@@ -5,8 +5,27 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jeff-upton-sp/sp-extension/internal/model"
 	"github.com/xeipuuv/gojsonschema"
 )
+
+type jsonSchemaCompiler struct {
+}
+
+func newJSONSchemaCompiler() *jsonSchemaCompiler {
+	c := &jsonSchemaCompiler{}
+
+	return c
+}
+
+func (c *jsonSchemaCompiler) CompileSchema(ctx context.Context, rawSchema model.RawSchema) (model.Schema, error) {
+	schema, err := newJSONSchema([]byte(rawSchema))
+	if err != nil {
+		return nil, err
+	}
+
+	return schema, nil
+}
 
 type jsonSchema struct {
 	schema *gojsonschema.Schema

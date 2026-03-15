@@ -10,14 +10,15 @@ type App struct {
 	FunctionRepo      model.FunctionRepo
 	FunctionEvaluator model.FunctionEvaluator
 	FunctionTypeRepo  model.FunctionTypeRepo
+	SchemaCompiler    model.SchemaCompiler
 }
 
 func (app *App) CreateFunction(ctx context.Context, input CreateFunctionInput) (CreateFunctionOutput, error) {
-	return createFunction(ctx, input, app.FunctionRepo)
+	return createFunction(ctx, input, app.FunctionRepo, app.FunctionTypeRepo)
 }
 
 func (app *App) CreateFunctionType(ctx context.Context, input CreateFunctionTypeInput) (CreateFunctionTypeOutput, error) {
-	return createFunctionType(ctx, input, app.FunctionTypeRepo)
+	return createFunctionType(ctx, input, app.FunctionTypeRepo, app.SchemaCompiler)
 }
 
 func (app *App) GetFunction(ctx context.Context, input GetFunctionInput) (GetFunctionOutput, error) {

@@ -9,8 +9,9 @@ import (
 )
 
 type CreateFunctionInput struct {
-	Name       string `json:"name"`
-	SourceCode string `json:"sourceCode"`
+	FunctionTypeID model.FunctionTypeID `json:"functionTypeId"`
+	Name           string               `json:"name"`
+	SourceCode     string               `json:"sourceCode"`
 }
 
 func (input CreateFunctionInput) Validate() error {
@@ -29,15 +30,20 @@ type CreateFunctionOutput struct {
 	Function model.Function `json:"function"`
 }
 
-func createFunction(ctx context.Context, input CreateFunctionInput, repo model.FunctionRepo) (CreateFunctionOutput, error) {
+func createFunction(ctx context.Context, input CreateFunctionInput, repo model.FunctionRepo, typeRepo model.FunctionTypeRepo) (CreateFunctionOutput, error) {
 	if err := input.Validate(); err != nil {
 		return CreateFunctionOutput{}, err
 	}
 
+	if _, err := typeRepo.FindByID(ctx, input.FunctionTypeID); err != nil {
+		return CreateFunctionOutput{}, fmt.Errorf("validate function type: %w", err)
+	}
+
 	f := model.Function{
-		ID:         model.FunctionID(input.Name),
-		Name:       input.Name,
-		SourceCode: input.SourceCode,
+		ID:             model.FunctionID(input.Name),
+		FunctionTypeID: model.FunctionTypeID(input.FunctionTypeID),
+		Name:           input.Name,
+		SourceCode:     input.SourceCode,
 	}
 
 	if err := repo.Save(ctx, &f); err != nil {

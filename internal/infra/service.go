@@ -45,10 +45,13 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 
 	functionEvaluator := newGojaFunctionEvaluator()
 
+	schemaCompiler := newJSONSchemaCompiler()
+
 	app := &cmd.App{
 		FunctionRepo:      functionRepo,
 		FunctionTypeRepo:  functionTypeRepo,
 		FunctionEvaluator: functionEvaluator,
+		SchemaCompiler:    schemaCompiler,
 	}
 
 	s := &ExtensionService{}

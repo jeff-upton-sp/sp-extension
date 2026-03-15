@@ -15,16 +15,23 @@ type Schema interface {
 	ValidateJSON(ctx context.Context, data []byte) error
 }
 
+type RawSchema = json.RawMessage
+
+type SchemaCompiler interface {
+	CompileSchema(ctx context.Context, rawSchema RawSchema) (Schema, error)
+}
+
 type FunctionType struct {
 	ID           FunctionTypeID `json:"id"`
-	InputSchema  Schema         `json:"inputSchema"`
-	OutputSchema Schema         `json:"outputSchema"`
+	InputSchema  RawSchema      `json:"inputSchema"`
+	OutputSchema RawSchema      `json:"outputSchema"`
 }
 
 type Function struct {
-	ID         FunctionID `json:"id"`
-	Name       string     `json:"name"`
-	SourceCode string     `json:"sourceCode"`
+	FunctionTypeID FunctionTypeID `json:"functionTypeId"`
+	ID             FunctionID     `json:"id"`
+	Name           string         `json:"name"`
+	SourceCode     string         `json:"sourceCode"`
 }
 
 type FunctionProvider interface {

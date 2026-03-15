@@ -61,8 +61,9 @@ func (s *ExtensionService) loadFunctions(ctx context.Context) error {
 		functionName = strings.TrimRight(functionName, "."+filepath.Ext(functionName))
 
 		createFunctionInput := cmd.CreateFunctionInput{
-			Name:       functionName,
-			SourceCode: string(sourceCode),
+			FunctionTypeID: "sp:dummy",
+			Name:           functionName,
+			SourceCode:     string(sourceCode),
 		}
 
 		if _, err := s.app.CreateFunction(ctx, createFunctionInput); err != nil {
