@@ -26,5 +26,5 @@ func (app *App) GetFunction(ctx context.Context, input GetFunctionInput) (GetFun
 }
 
 func (app *App) Invoke(ctx context.Context, input InvokeInput) (InvokeOutput, error) {
-	return invoke(ctx, input, app.FunctionRepo, app.FunctionEvaluator)
+	return invoke(ctx, input, app.FunctionRepo, app.FunctionTypeRepo, app.FunctionEvaluator, app.SchemaCompiler)
 }
