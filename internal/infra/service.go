@@ -45,7 +45,16 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 
 	functionEvaluator := newGojaFunctionEvaluator()
 
-	schemaCompiler := newJSONSchemaCompiler()
+	var schemaCompiler model.SchemaCompiler
+
+	schemaCompiler = newJSONSchemaCompiler()
+
+	if cfg.SchemaCacheSize > 0 {
+		schemaCompiler, err = newCachedSchemaCompiler(cfg.SchemaCacheSize, newJSONSchemaCompiler())
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	app := &cmd.App{
 		FunctionRepo:      functionRepo,
