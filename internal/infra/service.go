@@ -50,7 +50,7 @@ func NewExtensionService(ctx context.Context) (*ExtensionService, error) {
 	schemaCompiler = newJSONSchemaCompiler()
 
 	if cfg.SchemaCacheSize > 0 {
-		schemaCompiler, err = newCachedSchemaCompiler(cfg.SchemaCacheSize, newJSONSchemaCompiler())
+		schemaCompiler, err = newCachedSchemaCompiler(cfg.SchemaCacheSize, schemaCompiler)
 		if err != nil {
 			return nil, err
 		}
